@@ -1,5 +1,6 @@
 import psycopg2
 from sshtunnel import SSHTunnelForwarder
+import pandas as pd
 
 def redshift_ssh_query(query, 
                        db_name, db_user, db_pwd, db_host, db_port,
