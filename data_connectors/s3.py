@@ -49,7 +49,7 @@ def push_file_to_s3(path,key=None, use_creds = True):
     """Take in a path and push to S3"""
 
     if key == None:
-        print "Can't push to S3 without a key. Please specify a key."
+        print("Can't push to S3 without a key. Please specify a key.")
         return
 
     key = key.replace(' ','-')
@@ -57,21 +57,21 @@ def push_file_to_s3(path,key=None, use_creds = True):
     s3, bucket = get_s3_client(use_creds = use_creds)
     
     s3.upload_file(path, bucket, key)
-    print "Sent file %s to S3 with key '%s'"%(path,key)
+    print("Sent file %s to S3 with key '%s'"%(path,key))
         
         
 def pull_file_from_s3(key, path, use_creds = True):
     
     local_dir = '/'.join(path.split('/')[:-1])
     if not os.path.isdir(local_dir) and local_dir != '':
-        print "Local directory %s doesn't exist"%(local_dir)
+        print("Local directory %s doesn't exist"%(local_dir))
         return
     
     s3, bucket = get_s3_client(use_creds = use_creds)
     s3.download_file(bucket, key, path)
     
 
-    print "Grabbed %s from S3. Local file %s is now available."%(key,path)
+    print("Grabbed %s from S3. Local file %s is now available."%(key,path))
             
 def s3_fetch_module(s3_path, file_name, use_creds = True):
     
