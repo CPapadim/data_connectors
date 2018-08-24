@@ -27,7 +27,7 @@ def get_s3_client(bucket,
     
     return s3, bucket
     
-def s3_CSVtoDF(file_name, use_creds = False, access = None, secret = None, **kwargs):
+def s3_CSVtoDF(bucket, file_name, use_creds = False, access = None, secret = None, **kwargs):
     
     """
     
@@ -38,13 +38,13 @@ def s3_CSVtoDF(file_name, use_creds = False, access = None, secret = None, **kwa
     
     """
     
-    s3, bucket = get_s3_client(access = access, secret = secret, use_creds = use_creds)
+    s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
     obj = s3.get_object(Bucket=bucket, Key=file_name)
     
     return pd.read_csv(obj['Body'], **kwargs)
 
 
-def push_file_to_s3(path,key=None, use_creds = False, access = None, secret = None):
+def push_file_to_s3(bucket, path, key=None, use_creds = False, access = None, secret = None):
     
     """Take in a path and push to S3"""
 
@@ -54,35 +54,35 @@ def push_file_to_s3(path,key=None, use_creds = False, access = None, secret = No
 
     key = key.replace(' ','-')
 
-    s3, bucket = get_s3_client(access = access, secret = secret, use_creds = use_creds)
+    s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
     
     s3.upload_file(path, bucket, key)
     print("Sent file %s to S3 with key '%s'"%(path,key))
         
         
-def pull_file_from_s3(key, path, use_creds = False, access = None, secret = None):
+def pull_file_from_s3(bucket, key, path, use_creds = False, access = None, secret = None):
     
     local_dir = '/'.join(path.split('/')[:-1])
     if not os.path.isdir(local_dir) and local_dir != '':
         print("Local directory %s doesn't exist"%(local_dir))
         return
     
-    s3, bucket = get_s3_client(access = access, secret = secret, use_creds = use_creds)
+    s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
     s3.download_file(bucket, key, path)
     
 
     print("Grabbed %s from S3. Local file %s is now available."%(key,path))
             
-def s3_fetch_module(s3_path, file_name, use_creds = False, access = None, secret = None):
+def s3_fetch_module(bucket, key, file_name, use_creds = False, access = None, secret = None):
     
     """
     Fetch a module in a tar.gz file from s3
     
     """
     
-    s3, bucket = get_s3_client(access = access, secret = secret, use_creds = use_creds)
-    print('Fetching ' + s3_path + file_name)
-    s3.download_file(Bucket=bucket, Key=s3_path + file_name, Filename=file_name)
+    s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
+    print('Fetching ' + key + file_name)
+    s3.download_file(bucket, key + file_name, Filename=file_name)
 
                 
     dir_name = sub('.tar.gz$', '', file_name)
@@ -118,7 +118,7 @@ def s3_fetch_module(s3_path, file_name, use_creds = False, access = None, secret
         print('__init__.py not found.  Creating it in ' + dir_name)
         open(dir_name + '/__init__.py','w').close()
         
-def s3_ls(path, use_creds = False, access = None, secret = None):
+def s3_ls(bucket, path, use_creds = False, access = None, secret = None):
     
     """
     
@@ -126,7 +126,7 @@ def s3_ls(path, use_creds = False, access = None, secret = None):
     
     """
     
-    s3, bucket = get_s3_client(access = access, secret = secret, use_creds = use_creds)
+    s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
     
     if path != '' and path[-1] != '/':
         path += '/'
