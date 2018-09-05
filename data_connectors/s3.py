@@ -28,6 +28,7 @@ def get_s3_client(bucket,
     
     return s3, bucket
     
+    
 def s3_CSVtoDF(bucket, file_name, use_creds = False, access = None, secret = None, **kwargs):
     
     """
@@ -42,7 +43,7 @@ def s3_CSVtoDF(bucket, file_name, use_creds = False, access = None, secret = Non
     s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
     obj = s3.get_object(Bucket=bucket, Key=file_name)
     
-    return pd.read_csv(io.BytesIO(obj.response['Body'].read()), **kwargs)
+    return pd.read_csv(io.BytesIO(obj['Body'].read()), **kwargs)
 
 def s3_XLStoDF(bucket, file_name, use_creds = False, access = None, secret = None, **kwargs):
     
@@ -57,10 +58,10 @@ def s3_XLStoDF(bucket, file_name, use_creds = False, access = None, secret = Non
     
     s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
     obj = s3.get_object(Bucket=bucket, Key=file_name)
-    
-    return pd.read_excel(io.BytesIO(obj.response['Body'].read()), **kwargs)
 
+    return pd.read_excel(io.BytesIO(obj['Body'].read()), **kwargs)
   
+
 def push_file_to_s3(bucket, path, key=None, use_creds = False, access = None, secret = None):
     
     """Take in a path and push to S3"""
