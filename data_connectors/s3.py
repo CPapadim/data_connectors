@@ -4,6 +4,7 @@ from botocore.client import Config
 import pandas as pd
 from re import sub
 import tarfile
+import io
 
 
 def get_s3_client(bucket,
@@ -41,9 +42,25 @@ def s3_CSVtoDF(bucket, file_name, use_creds = False, access = None, secret = Non
     s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
     obj = s3.get_object(Bucket=bucket, Key=file_name)
     
-    return pd.read_csv(obj['Body'], **kwargs)
+    return pd.read_csv(io.BytesIO(response['Body'].read()), **kwargs)
 
+  def s3_XLStoDF(bucket, file_name, use_creds = False, access = None, secret = None, **kwargs):
+    
+    """
+    
+    Stream a data file from S3 into a dataframe
+    
+    All **kwargs are passed to pandas.read_excel() and must
+    therefore be valid keyword arguments of that function
+    
+    """
+    
+    s3, bucket = get_s3_client(bucket, access = access, secret = secret, use_creds = use_creds)
+    obj = s3.get_object(Bucket=bucket, Key=file_name)
+    
+    return pd.read_excel(io.BytesIO(response['Body'].read()), **kwargs)
 
+  
 def push_file_to_s3(bucket, path, key=None, use_creds = False, access = None, secret = None):
     
     """Take in a path and push to S3"""
