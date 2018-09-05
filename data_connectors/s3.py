@@ -44,7 +44,7 @@ def s3_CSVtoDF(bucket, file_name, use_creds = False, access = None, secret = Non
     
     return pd.read_csv(io.BytesIO(response['Body'].read()), **kwargs)
 
-  def s3_XLStoDF(bucket, file_name, use_creds = False, access = None, secret = None, **kwargs):
+def s3_XLStoDF(bucket, file_name, use_creds = False, access = None, secret = None, **kwargs):
     
     """
     
