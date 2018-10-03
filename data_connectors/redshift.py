@@ -34,22 +34,22 @@ def redshift_ssh_query(query,
      }
     
     if ssh_query: 
-      ssh_tunnel_params = {
+        ssh_tunnel_params = {
           'ssh_username': ssh_username,
           'remote_bind_address': (remote_bind_host, remote_bind_port),
           'local_bind_address': (local_bind_host, local_bind_port)        
-      }
+        }
 
-      if ssh_private_key_file is not None:
+        if ssh_private_key_file is not None:
           ssh_tunnel_params['ssh_pkey'] = ssh_private_key_file
 
-      if ssh_private_key_password is not None:
+        if ssh_private_key_password is not None:
           ssh_tunnel_params['ssh_private_key_password'] = ssh_private_key_password   
 
-      if ssh_password is not None:
+        if ssh_password is not None:
           ssh_tunnel_params['ssh_password'] = ssh_password
 
-      with SSHTunnelForwarder((ssh_host, ssh_port), **ssh_tunnel_params) as server:
+        with SSHTunnelForwarder((ssh_host, ssh_port), **ssh_tunnel_params) as server:
 
           server.start()
           print("Connected to SSH Server")
@@ -68,15 +68,15 @@ def redshift_ssh_query(query,
           print("Closed SSH Server Connection")
           
     else:
-      
-      conn = psycopg2.connect(**conn_params)
-      print("Connected to Database")
 
-      print("Executing Query...")
-      df = pd.read_sql(query, conn)
-      print("Query Completed")
+        conn = psycopg2.connect(**conn_params)
+        print("Connected to Database")
 
-      conn.close()
-      print("Closed Database Connection")
-      
-  return df 
+        print("Executing Query...")
+        df = pd.read_sql(query, conn)
+        print("Query Completed")
+
+        conn.close()
+        print("Closed Database Connection")
+
+    return df 
