@@ -79,4 +79,4 @@ def redshift_ssh_query(query,
       conn.close()
       print("Closed Database Connection")
       
-return df 
+  return df 
